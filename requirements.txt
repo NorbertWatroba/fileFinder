@@ -1,2 +1,4 @@
 python-decouple
 mysql-connector-python
+customtkinter
+Pillow
