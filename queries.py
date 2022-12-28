@@ -1,7 +1,7 @@
 create_files_table = """
 CREATE TABLE Files(
 Id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-path varchar(260) NOT NULL UNIQUE)
+path text(260) NOT NULL UNIQUE)
 """
 
 create_categories_table = """
@@ -20,5 +20,6 @@ FOREIGN KEY (cat_id) REFERENCES Categories(Id) ON DELETE CASCADE)
 
 
 def insert_path(path) -> str:
-    query = f'INSERT INTO Files(path) VALUES("{path}")'
+    formatted_path = str(path).replace('\\', '\\\\')
+    query = fr'INSERT INTO Files(path) VALUES("{formatted_path}")'
     return query
