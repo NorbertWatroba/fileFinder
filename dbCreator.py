@@ -1,14 +1,18 @@
-from decouple import config
+from configparser import ConfigParser
 from pathlib import Path
 from mysql.connector import connect, Error
 from queries import *
 
+config = ConfigParser()
+config.sections()
+config.read('config.ini')
+
 
 def establish_connection():
-    host = config('HOST')
-    database = config('DATABASE')
-    user = config('USER')
-    password = config('PASSWORD')
+    host = config.get('DATABASE', 'HOST')
+    database = config.get('DATABASE', 'DATABASE')
+    user = config.get('DATABASE', 'USER')
+    password = config.get('DATABASE', 'PASSWORD')
     try:
         conn = connect(host=host, database=database, user=user, password=password)
         cursor = conn.cursor()
@@ -35,7 +39,7 @@ def create_db():
 
 def fill_db():
     try:
-        root = config('ROOT')
+        root = config.get('OS', 'ROOT')
         conn, cursor = establish_connection()
         for path in Path(root).rglob('*.jpg'):
             cursor.execute(insert_path(path))
@@ -44,3 +48,12 @@ def fill_db():
         print(f'Error while filling the database: {e}')
     finally:
         print('Filling successful!')
+
+'''
+root = config.get('OS', 'ROOT')
+host = config.get('DATABASE', 'HOST')
+database = config.get('DATABASE', 'DATABASE')
+user = config.get('DATABASE', 'USER')
+password = config.get('DATABASE', 'PASSWORD')
+print(host, database, user, password, root)
+'''

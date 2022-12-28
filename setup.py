@@ -1,5 +1,6 @@
 import customtkinter
 from dbCreator import create_db
+from configparser import ConfigParser
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -34,13 +35,14 @@ class Setup(customtkinter.CTk):
         self.submit.pack(padx=20, pady=(10, 20))
 
     def create_env(self):
-        with open('.env', 'w') as f:
-            f.write(f'''ROOT = {self.directory.get()}
-
-HOST = {self.host.get()}
-DATABASE = {self.database.get()}
-USER = {self.user.get()}
-PASSWORD = {self.password.get()}''')
+        config = ConfigParser()
+        config['OS'] = {'root': self.password.get()}
+        config['DATABASE'] = {'HOST': self.host.get(),
+                              'DATABASE': self.database.get(),
+                              'USER': self.user.get(),
+                              'PASSWORD': self.password.get()}
+        with open('config.ini', 'w') as conf_file:
+            config.write(conf_file)
         create_db()
         self.destroy()
 
