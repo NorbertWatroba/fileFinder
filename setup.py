@@ -1,4 +1,5 @@
 import customtkinter
+from dbCreator import create_db
 
 customtkinter.set_appearance_mode("dark")
 customtkinter.set_default_color_theme("dark-blue")
@@ -40,6 +41,8 @@ HOST = {self.host.get()}
 DATABASE = {self.database.get()}
 USER = {self.user.get()}
 PASSWORD = {self.password.get()}''')
+        create_db()
+        self.destroy()
 
 
 if __name__ == '__main__':
