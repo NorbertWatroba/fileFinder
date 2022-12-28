@@ -2,9 +2,6 @@ import customtkinter
 from dbCreator import create_db
 from configparser import ConfigParser
 
-customtkinter.set_appearance_mode("dark")
-customtkinter.set_default_color_theme("dark-blue")
-
 
 class Setup(customtkinter.CTk):
     def __init__(self):
@@ -36,7 +33,7 @@ class Setup(customtkinter.CTk):
 
     def create_env(self):
         config = ConfigParser()
-        config['OS'] = {'root': self.password.get()}
+        config['OS'] = {'root': self.directory.get()}
         config['DATABASE'] = {'HOST': self.host.get(),
                               'DATABASE': self.database.get(),
                               'USER': self.user.get(),
@@ -48,5 +45,8 @@ class Setup(customtkinter.CTk):
 
 
 if __name__ == '__main__':
+    customtkinter.set_appearance_mode("dark")
+    customtkinter.set_default_color_theme("dark-blue")
+
     setup = Setup()
     setup.mainloop()

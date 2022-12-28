@@ -3,12 +3,15 @@ from pathlib import Path
 from mysql.connector import connect, Error
 from queries import *
 
-config = ConfigParser()
-config.sections()
-config.read('config.ini')
+
+def read_config():
+    config = ConfigParser()
+    config.read('config.ini')
+    return config
 
 
 def establish_connection():
+    config = read_config()
     host = config.get('DATABASE', 'HOST')
     database = config.get('DATABASE', 'DATABASE')
     user = config.get('DATABASE', 'USER')
@@ -32,6 +35,7 @@ def create_db():
     except Error as e:
         print(f'Error while connecting to the database: {e}')
     finally:
+        print('Database creation successful!')
         cursor.close()
         conn.close()
         fill_db()
@@ -39,6 +43,7 @@ def create_db():
 
 def fill_db():
     try:
+        config = read_config()
         root = config.get('OS', 'ROOT')
         conn, cursor = establish_connection()
         for path in Path(root).rglob('*.jpg'):
