@@ -8,10 +8,13 @@ class Setup(customtkinter.CTk):
         super().__init__()
 
         self.title("Setup")
-        self.geometry("300x350")
+        self.geometry("250x350")
 
-        self.frame = customtkinter.CTkFrame(self)
-        self.frame.pack(padx=30, pady=10, fill="both", expand=True)
+        self.root = customtkinter.CTkFrame(self, fg_color='#101010', corner_radius=0)
+        self.root.pack(expand=True, fill='both')
+
+        self.frame = customtkinter.CTkFrame(self.root, fg_color='#1c1c1c')
+        self.frame.pack(padx=20, pady=10, fill="both", expand=True)
 
         self.directory = customtkinter.CTkEntry(self.frame, placeholder_text="Directory name")
         self.directory.pack(padx=20, pady=(20, 10))
