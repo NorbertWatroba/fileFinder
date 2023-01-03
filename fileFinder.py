@@ -39,11 +39,11 @@ class FileFinder(customtkinter.CTk):
         self.footer.grid(column=0, row=1, sticky='nsew', padx=10, pady=5)
 
         # binds definition
-        self.bind('<KeyPress-F5>', self.resizer)
-        self.bind('<KeyPress-Right>', self.next_page)
-        self.bind('<KeyPress-Left>', self.previous_page)
+        self.bind('<KeyPress-F5>', lambda e: self.resizer())
+        self.bind('<KeyPress-Right>', lambda e: self.next_page())
+        self.bind('<KeyPress-Left>', lambda e: self.previous_page())
 
-    def next_page(self, *args):
+    def next_page(self):
         if self.page_num < self.total_pages - 1:
             self.page_num += 1
             self.page = self.create_page((self.winfo_width(), self.winfo_height()))
@@ -51,7 +51,7 @@ class FileFinder(customtkinter.CTk):
             self.footer = self.create_footer()
             self.footer.grid(column=0, row=1, sticky='nsew', padx=10, pady=5)
 
-    def previous_page(self, *args):
+    def previous_page(self):
         if self.page_num > 0:
             self.page_num -= 1
             self.page = self.create_page((self.winfo_width(), self.winfo_height()))
@@ -86,7 +86,7 @@ class FileFinder(customtkinter.CTk):
             photo.grid(column=column, row=row, sticky='nsew')
         return page
 
-    def resizer(self, *args):
+    def resizer(self):
         self.page = self.create_page((self.winfo_width(), self.winfo_height()))
         self.page.grid(row=0, sticky='nsew')
 

@@ -1,5 +1,4 @@
 import customtkinter
-from PIL import Image
 from functools import partial
 
 from queries import get_all_categories, get_assigned_categories, assign_category, discharge_category, create_category
