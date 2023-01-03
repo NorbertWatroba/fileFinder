@@ -1,11 +1,13 @@
 import customtkinter
 from functools import partial
+import subprocess
 
 from queries import get_all_categories, get_assigned_categories, assign_category, discharge_category, create_category
+from utils import get_abs_path
 
 
 class Describe(customtkinter.CTkToplevel):
-    def __init__(self, parent, path: tuple):
+    def __init__(self, parent, path: tuple, button: customtkinter.CTkButton):
         super().__init__(parent)
 
         # defining window
@@ -24,12 +26,15 @@ class Describe(customtkinter.CTkToplevel):
         self.categories = get_all_categories()
         self.path = path
         self.assigned_cat = get_assigned_categories(self.path[0])
+        self.active_button = button
 
         # creating menu
         self.menu = customtkinter.CTkFrame(self.root, fg_color='#1c1c1c')
         self.category_creation, self.entry = self.create_category_creator()
         self.category_selection = self.create_category_selection()
         self.menu.pack(expand=True, fill='both', padx=5, pady=5)
+
+        self.protocol('WM_DELETE_WINDOW', self.close)
 
     def create_category_selection(self):
         categories_frame = customtkinter.CTkFrame(self.menu, fg_color='transparent')
@@ -55,10 +60,10 @@ class Describe(customtkinter.CTkToplevel):
         new_category_frame = customtkinter.CTkFrame(self.menu, fg_color='transparent')
         entry = customtkinter.CTkEntry(new_category_frame, border_width=1, fg_color='transparent',
                                        placeholder_text='new category', border_color='#555555')
-        entry.bind('<Enter>', self.adding_category)
+        entry.bind('<Return>', lambda e: self.adding_category())
         entry.pack(pady=10)
-        add = customtkinter.CTkButton(new_category_frame, text='add', width=65, height=25,
-                                      command=self.adding_category)
+        add = customtkinter.CTkButton(new_category_frame, text='open', width=65, height=25,
+                                      command=self.open_in_dir)
         add.pack()
         new_category_frame.pack(fill='x', padx=10, pady=10)
         return new_category_frame, entry
@@ -94,3 +99,11 @@ class Describe(customtkinter.CTkToplevel):
         self.category_creation, self.entry = self.create_category_creator()
         self.category_selection = self.create_category_selection()
         self.menu.pack(expand=True, fill='both', padx=5, pady=5)
+
+    def open_in_dir(self):
+        abs_path = get_abs_path(self.path[1])
+        subprocess.Popen(fr"explorer /select, {abs_path}")
+
+    def close(self):
+        self.active_button.configure(fg_color='transparent')
+        self.destroy()

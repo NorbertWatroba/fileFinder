@@ -36,3 +36,9 @@ def size_scaling(img_size: tuple, wdw_size: tuple):
     final_size = (img_x * resize, img_y * resize)
     return final_size
 
+
+def get_abs_path(path):
+    config = read_config()
+    root_path = config.get('OS', 'ABSOLUTE_PATH')
+    return fr'{root_path}\{path}'
+

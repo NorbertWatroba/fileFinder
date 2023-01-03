@@ -4,7 +4,7 @@ from PIL import Image
 from functools import partial
 from math import ceil
 
-from utils import size_scaling
+from utils import size_scaling, read_config
 from queries import get_all_paths
 from describer import Describe
 
@@ -28,7 +28,7 @@ class FileFinder(customtkinter.CTk):
 
         # collecting data
         self.paths = get_all_paths()
-        self.page_num = 0
+        self.page_num = int(read_config().get('BOOKMARKS', 'RECENT'))
         self.total_pages = ceil(len(self.paths) / 6)
 
         # building home page
@@ -42,6 +42,8 @@ class FileFinder(customtkinter.CTk):
         self.bind('<KeyPress-F5>', lambda e: self.resizer())
         self.bind('<KeyPress-Right>', lambda e: self.next_page())
         self.bind('<KeyPress-Left>', lambda e: self.previous_page())
+
+        self.protocol('WM_DELETE_WINDOW', self.close)
 
     def next_page(self):
         if self.page_num < self.total_pages - 1:
@@ -78,8 +80,8 @@ class FileFinder(customtkinter.CTk):
                 img_size = Image.open(path[1]).size
                 image = customtkinter.CTkImage(Image.open(path[1]),
                                                size=size_scaling(img_size, wdw_size))
-                photo = customtkinter.CTkButton(page, image=image, text='', fg_color='transparent', corner_radius=5,
-                                                command=partial(self.describe, path))
+                photo = customtkinter.CTkButton(page, image=image, text='', fg_color='transparent', corner_radius=5)
+                photo.configure(command=partial(self.describe, path, photo))
             except:
                 photo = customtkinter.CTkFrame(page, height=(self.winfo_height()-65)//2,
                                                width=self.winfo_width()//3, fg_color='transparent')
@@ -104,9 +106,17 @@ class FileFinder(customtkinter.CTk):
         btn_p.grid(column=0, row=0, sticky='e')
         return footer
 
-    def describe(self, path: tuple):
-        window = Describe(self, path)
+    def describe(self, path: tuple, button: customtkinter.CTkButton):
+        window = Describe(self, path, button)
+        button.configure(fg_color='#1f3f6b')
         window.grab_set()
+
+    def close(self):
+        config = read_config()
+        config.set('BOOKMARKS', 'RECENT', str(self.page_num))
+        with open('config.ini', 'w') as conf_file:
+            config.write(conf_file)
+        self.destroy()
 
 
 app = FileFinder()

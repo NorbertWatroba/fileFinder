@@ -24,7 +24,7 @@ def create_db(conn, cursor):
 @db_connection
 def fill_db(conn, cursor):
     config = read_config()
-    root = config.get('OS', 'ROOT')
+    root = config.get('OS', 'DIRECTORY')
     for path in Path(root).rglob('*.jpg'):
         try:
             cursor.execute(insert_path(path))

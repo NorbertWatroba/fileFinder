@@ -9,6 +9,7 @@ class Setup(customtkinter.CTk):
 
         self.title("Setup")
         self.geometry("250x350")
+        self.resizable(False, False)
 
         self.root = customtkinter.CTkFrame(self, fg_color='#101010', corner_radius=0)
         self.root.pack(expand=True, fill='both')
@@ -16,8 +17,8 @@ class Setup(customtkinter.CTk):
         self.frame = customtkinter.CTkFrame(self.root, fg_color='#1c1c1c')
         self.frame.pack(padx=20, pady=10, fill="both", expand=True)
 
-        self.directory = customtkinter.CTkEntry(self.frame, placeholder_text="Directory name")
-        self.directory.pack(padx=20, pady=(20, 10))
+        self.path = customtkinter.CTkEntry(self.frame, placeholder_text="Absolute path to directory")
+        self.path.pack(padx=20, pady=(20, 10))
 
         self.host = customtkinter.CTkEntry(self.frame, placeholder_text="Host")
         self.host.pack(padx=20, pady=10)
@@ -36,11 +37,15 @@ class Setup(customtkinter.CTk):
 
     def create_env(self):
         config = ConfigParser()
-        config['OS'] = {'root': self.directory.get()}
+        directory = self.path.get().split('\\')[-1]
+        path = '\\'.join(self.path.get().split('\\')[:-1])
+        config['OS'] = {'DIRECTORY': directory,
+                        'ABSOLUTE_PATH': path}
         config['DATABASE'] = {'HOST': self.host.get(),
                               'DATABASE': self.database.get(),
                               'USER': self.user.get(),
                               'PASSWORD': self.password.get()}
+        config['BOOKMARKS'] = {'RECENT': 0}
         with open('config.ini', 'w') as conf_file:
             config.write(conf_file)
         create_db()

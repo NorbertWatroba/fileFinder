@@ -65,6 +65,6 @@ def discharge_category(file: int, category: int, conn, cursor):
 
 
 @db_connection
-def create_category(category, conn, cursor):
-    cursor.execute(f"INSERT INTO categories(`Name`) VALUES('{category}')")
+def create_category(category: str, conn, cursor):
+    cursor.execute(f"INSERT INTO categories(`Name`) VALUES('{category.title()}')")
     conn.commit()
