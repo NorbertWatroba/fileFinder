@@ -56,6 +56,7 @@ class Describe(customtkinter.CTkToplevel):
         new_category_frame = customtkinter.CTkFrame(self.menu, fg_color='transparent')
         entry = customtkinter.CTkEntry(new_category_frame, border_width=1, fg_color='transparent',
                                        placeholder_text='new category', border_color='#555555')
+        entry.bind('<Enter>', self.adding_category)
         entry.pack(pady=10)
         add = customtkinter.CTkButton(new_category_frame, text='add', width=65, height=25,
                                       command=self.adding_category)
