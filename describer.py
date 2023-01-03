@@ -5,9 +5,9 @@ from functools import partial
 from queries import get_all_categories, get_assigned_categories, assign_category, discharge_category, create_category
 
 
-class Describe(customtkinter.CTk):
-    def __init__(self, path: tuple):
-        super().__init__()
+class Describe(customtkinter.CTkToplevel):
+    def __init__(self, parent, path: tuple):
+        super().__init__(parent)
 
         # defining window
         customtkinter.set_appearance_mode("dark")
@@ -94,4 +94,3 @@ class Describe(customtkinter.CTk):
         self.category_creation, self.entry = self.create_category_creator()
         self.category_selection = self.create_category_selection()
         self.menu.pack(expand=True, fill='both', padx=5, pady=5)
-

@@ -104,9 +104,9 @@ class FileFinder(customtkinter.CTk):
         btn_p.grid(column=0, row=0, sticky='e')
         return footer
 
-    @staticmethod
-    def describe(path: tuple):
-        Describe(path).mainloop()
+    def describe(self, path: tuple):
+        window = Describe(self, path)
+        window.grab_set()
 
 
 app = FileFinder()
