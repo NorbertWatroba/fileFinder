@@ -44,11 +44,10 @@ class Describe(customtkinter.CTkToplevel):
         index = 0
         for category in self.categories:
             checkbox = customtkinter.CTkCheckBox(categories_frame, text=category[1],
-                                                 onvalue=f'+{category[0]}', offvalue=f'-{category[0]}',
                                                  border_width=1, width=0, height=20,
                                                  checkbox_width=20, checkbox_height=20,
-                                                 command=partial(self.manage_categories, categories_frame),
                                                  border_color='#555555')
+            checkbox.configure(command=partial(self.manage_categories, checkbox, category[0]))
             if category[0] in self.assigned_cat:
                 checkbox.select()
             checkbox.grid(column=index % 2, row=index // 2, pady=3, padx=10, sticky='w')
@@ -68,22 +67,13 @@ class Describe(customtkinter.CTkToplevel):
         new_category_frame.pack(fill='x', padx=10, pady=10)
         return new_category_frame, entry
 
-    def manage_categories(self, frame: customtkinter.CTkFrame):
-        action_list = []
-
-        for child in frame.winfo_children():
-            if isinstance(child, customtkinter.CTkCheckBox):
-                action_list.append(child.get())
-
-        for action in action_list:
-
-            if action[0] == '+' and int(action[1:]) not in self.assigned_cat:
-                assign_category(self.path[0], int(action[1:]))
-                self.assigned_cat = get_assigned_categories(self.path[0])
-
-            elif action[0] == '-' and int(action[1:]) in self.assigned_cat:
-                discharge_category(self.path[0], int(action[1:]))
-                self.assigned_cat = get_assigned_categories(self.path[0])
+    def manage_categories(self, checkbox, category):
+        if checkbox.get():
+            assign_category(self.path[0], category)
+            self.assigned_cat = get_assigned_categories(self.path[0])
+        else:
+            discharge_category(self.path[0], category)
+            self.assigned_cat = get_assigned_categories(self.path[0])
 
     def adding_category(self):
 

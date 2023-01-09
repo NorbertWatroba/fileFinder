@@ -1,38 +1,38 @@
-# from pathlib import Path
-from queries import *
-from utils import read_config, db_connection
+from pathlib import Path
+from queries import create_categories_table, create_files_table, create_dependencies_table, insert_path
+from utils import read_config, sql_execute
 from mysql.connector import Error
 
 
-@db_connection
-def create_db(conn, cursor):
-    try:
-        cursor.execute(create_categories_table)
-        cursor.execute(create_files_table)
-        cursor.execute(create_dependencies_table)
-        conn.commit()
-
-    except Error as e:
-        print(f'Error while connecting to the database: {e}')
-    finally:
-        print('Database creation successful!')
-        cursor.close()
-        conn.close()
-        fill_db()
+def create_db():
+    create_categories_table()
+    create_files_table()
+    create_dependencies_table()
+    fill_db()
 
 
-@db_connection
-def fill_db(conn, cursor):
+@sql_execute()
+def fill_db():
+    config = read_config()
+    root = config.get('OS', 'DIRECTORY')
+    query = 'INSERT INTO Files(path) VALUES'
+    values = []
+    for path in Path(root).rglob('*.jpg'):
+        formatted_path = str(path).replace('\\', '\\\\')
+        packed_path = fr'("{formatted_path}")'
+        values.append(packed_path)
+
+    values = ', '.join(values)
+    query += values
+    return query
+
+
+def fill_db2():
     config = read_config()
     root = config.get('OS', 'DIRECTORY')
     for path in Path(root).rglob('*.jpg'):
         try:
-            cursor.execute(insert_path(path))
-            conn.commit()
+            insert_path(path)
         except Error as e:
-            print(f'Error while filling the database: {e.msg}')
-    print('Finished filling!')
+            print(e.msg)
 
-
-if __name__ == '__main__':
-    fill_db()
