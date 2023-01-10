@@ -62,3 +62,7 @@ def discharge_category(file_id: int, category_id: int):
 @sql_execute()
 def create_category(category: str):
     return fr"INSERT INTO categories(`Name`) VALUES('{category.title()}')"
+
+@sql_execute(lambda result: result[0][0])
+def get_category_id(category_name: str):
+    return fr'SELECT Id FROM Categories WHERE Name LIKE "{category_name}"'

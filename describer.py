@@ -2,7 +2,8 @@ import customtkinter
 from functools import partial
 import subprocess
 
-from queries import get_all_categories, get_assigned_categories, assign_category, discharge_category, create_category
+from queries import get_all_categories, get_assigned_categories, assign_category, discharge_category, create_category,\
+    get_category_id
 from utils import get_abs_path
 
 
@@ -76,8 +77,9 @@ class Describe(customtkinter.CTkToplevel):
             self.assigned_cat = get_assigned_categories(self.path[0])
 
     def adding_category(self):
-
-        create_category(self.entry.get())
+        category_name = self.entry.get()
+        create_category(category_name)
+        assign_category(self.path[0], get_category_id(category_name))
 
         # update data
         self.categories = get_all_categories()
