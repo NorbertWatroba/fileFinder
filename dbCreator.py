@@ -36,3 +36,6 @@ def fill_db2():
         except Error as e:
             print(e.msg)
 
+
+if __name__ == '__main__':
+    create_db()

@@ -66,3 +66,21 @@ def create_category(category: str):
 @sql_execute(lambda result: result[0][0])
 def get_category_id(category_name: str):
     return fr'SELECT Id FROM Categories WHERE Name LIKE "{category_name}"'
+
+@sql_execute()
+def create_new_view(values: list, command: str):
+    if command == 'AND':
+        query = []
+        for value in values:
+            query.append(f'SELECT Id, path FROM files INNER JOIN dependencies ON files.Id = dependencies.path_id WHERE cat_id = {value}')
+        query = ' INTERSECT '.join(query)
+    elif command == 'OR':
+        condition = []
+        query = "SELECT DISTINCT Id, path from files INNER JOIN dependencies ON files.Id = dependencies.path_id WHERE "
+        for value in values:
+            value = fr'dependencies.cat_id = {value}'
+            condition.append(value)
+        query += fr' OR '.join(condition)
+    else:
+        query = r'SELECT Id, path FROM Files'
+    return query

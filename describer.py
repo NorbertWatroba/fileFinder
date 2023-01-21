@@ -41,6 +41,10 @@ class Describe(customtkinter.CTkToplevel):
         categories_frame = customtkinter.CTkFrame(self.menu, fg_color='transparent')
         categories_frame.grid_columnconfigure(0, weight=1)
         categories_frame.grid_columnconfigure(1, weight=1)
+        categories_frame.grid_columnconfigure(2, weight=1)
+        categories_frame.grid_columnconfigure(3, weight=1)
+        categories_frame.grid_columnconfigure(4, weight=1)
+
 
         index = 0
         for category in self.categories:
@@ -51,7 +55,7 @@ class Describe(customtkinter.CTkToplevel):
             checkbox.configure(command=partial(self.manage_categories, checkbox, category[0]))
             if category[0] in self.assigned_cat:
                 checkbox.select()
-            checkbox.grid(column=index % 2, row=index // 2, pady=3, padx=10, sticky='w')
+            checkbox.grid(column=index % 5, row=index // 5, pady=3, padx=10, sticky='w')
             index += 1
         categories_frame.pack(anchor='n', fill='x', pady=7, before=self.category_creation)
         return categories_frame

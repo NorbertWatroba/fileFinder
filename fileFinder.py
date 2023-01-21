@@ -5,7 +5,7 @@ from functools import partial
 from math import ceil
 
 from utils import read_config
-from queries import get_all_paths, get_all_categories
+from queries import get_all_paths, get_all_categories, create_new_view
 from describer import Describe
 
 
@@ -116,19 +116,53 @@ class FileFinder(customtkinter.CTk):
             self.footer.grid(column=0, row=1, sticky='nsew', padx=10, pady=5)
 
     def create_settings_menu(self):
-        frame = customtkinter.CTkFrame(self.root, corner_radius=5, fg_color='#1c1c1c', width=500)
-        frame.grid_columnconfigure(0, weight=1)
-        frame.grid_columnconfigure(1, weight=1)
+        menu = customtkinter.CTkFrame(self.root, corner_radius=5, fg_color='#1c1c1c')
+        view_frame = customtkinter.CTkFrame(menu, fg_color='transparent')
+        view_frame.grid_columnconfigure(0, weight=1)
+        view_frame.grid_columnconfigure(2, weight=1)
+
+        view_frame.grid_columnconfigure(1, weight=1)
+        view_frame.grid_columnconfigure(3, weight=1)
+        view_frame.grid_columnconfigure(4, weight=1)
 
         index = 0
         for category in get_all_categories():
-            checkbox = customtkinter.CTkCheckBox(frame, text=category[1],
+            checkbox = customtkinter.CTkCheckBox(view_frame, text=category[1], onvalue=str(category[0]),
                                                  border_width=1, width=0, height=20,
                                                  checkbox_width=20, checkbox_height=20,
                                                  border_color='#555555')
-            checkbox.grid(column=index % 2, row=index // 2, pady=3, padx=10, sticky='w')
+            checkbox.grid(column=index % 5, row=index // 5, sticky='w', pady=1.5, padx=10)
             index += 1
-        return frame
+        query_type = customtkinter.StringVar()
+        query_type.set('AND')
+        and_btn = customtkinter.CTkRadioButton(view_frame, text='and', variable=query_type, value='AND')
+        and_btn.grid(column=3, row=index//5+1, pady=3.5, sticky='nsew')
+        or_btn = customtkinter.CTkRadioButton(view_frame, text='or', variable=query_type, value='OR')
+        or_btn.grid(column=4, row=index//5+1, pady=3.5, sticky='nsew')
+        all_btn = customtkinter.CTkRadioButton(view_frame, text='all', variable=query_type, value='ALL')
+        all_btn.grid(column=3, row=index//5+2, pady=3.5, sticky='nsew')
+
+        submit = customtkinter.CTkButton(view_frame, text='save', width=40, command=partial(self.create_view, view_frame, query_type))
+        submit.grid(column=4, row=index//5+2, sticky='nsew')
+
+        view_frame.pack(expand=True, fill='both', pady=10, padx=10)
+        return menu
+
+    def create_view(self, frame, command: customtkinter.StringVar):
+        category_list = []
+
+        for child in frame.winfo_children():
+            if isinstance(child, customtkinter.CTkCheckBox) and (cat_id := child.get()):
+                category_list.append(cat_id)
+        self.paths = create_new_view(category_list, command.get())
+        if not self.paths:
+            pass
+        self.page_num = 0
+        self.total_pages = ceil(len(self.paths) / 6)
+        self.create_footer()
+        self.create_page((self.winfo_width(), self.winfo_height()))
+        self.settings()
+
 
     def create_page(self, wdw_size: tuple):
         if hasattr(self, 'page'):
