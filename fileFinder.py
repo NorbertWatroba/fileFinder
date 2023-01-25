@@ -136,14 +136,16 @@ class FileFinder(customtkinter.CTk):
         query_type = customtkinter.StringVar()
         query_type.set('AND')
         and_btn = customtkinter.CTkRadioButton(view_frame, text='and', variable=query_type, value='AND')
-        and_btn.grid(column=3, row=index//5+1, pady=3.5, sticky='nsew')
+        and_btn.grid(column=3, row=index//5+1, pady=3.5, padx=5, sticky='nsew')
         or_btn = customtkinter.CTkRadioButton(view_frame, text='or', variable=query_type, value='OR')
-        or_btn.grid(column=4, row=index//5+1, pady=3.5, sticky='nsew')
-        all_btn = customtkinter.CTkRadioButton(view_frame, text='all', variable=query_type, value='ALL')
-        all_btn.grid(column=3, row=index//5+2, pady=3.5, sticky='nsew')
+        or_btn.grid(column=4, row=index//5+1, pady=3.5, padx=5, sticky='nsew')
+        all_value = customtkinter.StringVar()
+        all_value.set('ALL')
+        all_btn = customtkinter.CTkButton(view_frame, text='show all', width=40, command=partial(self.create_view, view_frame, all_value))
+        all_btn.grid(column=0, row=index//5+2, pady=3.5, padx=5, sticky='nsew')
 
         submit = customtkinter.CTkButton(view_frame, text='save', width=40, command=partial(self.create_view, view_frame, query_type))
-        submit.grid(column=4, row=index//5+2, sticky='nsew')
+        submit.grid(column=4, row=index//5+2, pady=3.5, padx=5, sticky='nsew')
 
         view_frame.pack(expand=True, fill='both', pady=10, padx=10)
         return menu

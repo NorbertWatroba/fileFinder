@@ -30,6 +30,7 @@ FOREIGN KEY (cat_id) REFERENCES Categories(Id) ON DELETE CASCADE)
 
 @sql_execute()
 def insert_path(path: Union[str, Path]) -> str:
+    # might be unnecessary!
     formatted_path = str(path).replace('\\', '\\\\')
     return fr'INSERT INTO Files(path) VALUES("{formatted_path}")'
 
