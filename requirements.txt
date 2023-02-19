@@ -1,3 +1,4 @@
 mysql-connector-python~=8.0.31
 customtkinter~=5.0.3
 Pillow
+numpy

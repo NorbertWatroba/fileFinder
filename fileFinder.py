@@ -4,6 +4,8 @@ from PIL import Image
 from functools import partial
 from math import ceil
 
+import numpy as np
+
 from utils import read_config
 from queries import get_all_paths, get_all_categories, create_new_view
 from describer import Describe
@@ -157,8 +159,7 @@ class FileFinder(customtkinter.CTk):
             if isinstance(child, customtkinter.CTkCheckBox) and (cat_id := child.get()):
                 category_list.append(cat_id)
         self.paths = create_new_view(category_list, command.get())
-        if not self.paths:
-            pass
+
         self.page_num = 0
         self.total_pages = ceil(len(self.paths) / 6)
         self.create_footer()

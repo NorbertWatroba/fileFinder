@@ -45,7 +45,7 @@ def get_all_categories() -> str:
     return r'SELECT Id, Name FROM Categories'
 
 
-@sql_execute(lambda result: list(map(lambda row: row[0], result)))
+@sql_execute(lambda result: result[:,0].astype(str) if result.size else result)
 def get_assigned_categories(file_id: int) -> str:
     return fr'SELECT cat_id FROM dependencies WHERE path_id = {file_id}'
 

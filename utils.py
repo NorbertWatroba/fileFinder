@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from mysql.connector import connect, Error
 
+import numpy as np
 
 def read_config():
     config = ConfigParser()
@@ -8,6 +9,14 @@ def read_config():
     return config
 
 def sql_execute(formatting = None):
+    """
+    Decorator for function returning string with sql query. It executes it and returns the response.
+    You can also provide formatting function to change the standard return being 2d numpy array.
+
+    :param formatting: function
+    :return: numpy array object
+    """
+
     def db_connection(func):
         def establish_connection(*args, **kwargs):
             config = read_config()
@@ -23,11 +32,15 @@ def sql_execute(formatting = None):
             with conn.cursor() as cursor:
                 try:
                     cursor.execute(func(*args, **kwargs))
-                    result = cursor.fetchall()
+                    result = np.array(cursor.fetchall(), dtype=object)
                     conn.commit()
+                    print(result)
+                    print('-'*80)
                     if formatting:
                         result = formatting(result)
                     conn.close()
+                    print(result)
+                    print('=' * 80)
                     return result
                 except Error as e:
                     print(f'Error: {e.msg}')
